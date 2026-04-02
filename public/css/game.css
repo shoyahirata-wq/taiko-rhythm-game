@@ -160,3 +160,106 @@ kbd {
   border: 1.5px solid rgba(255,255,255,0.2);
 }
 .menu-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+/* ===== 対戦相手HUD ===== */
+.opponent-hud {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: .4rem 1.5rem;
+  background: linear-gradient(90deg, rgba(255,110,180,0.15), rgba(91,200,255,0.15));
+  border-bottom: 1px solid rgba(255,110,180,0.3);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.opponent-info {
+  display: flex; align-items: center;
+}
+.opponent-label {
+  font-size: .85rem; font-weight: 700; color: var(--pink, #ff6eb4);
+}
+
+.opponent-stats {
+  display: flex; align-items: center; gap: 1.2rem;
+}
+.opponent-stat {
+  display: flex; flex-direction: column; align-items: center;
+}
+.opponent-stat-label {
+  font-size: .6rem; color: #888; letter-spacing: .1em;
+}
+.opponent-stat-value {
+  font-size: 1.2rem; font-weight: 900; color: #ff6eb4;
+}
+
+.opponent-judgment {
+  font-size: .85rem; font-weight: 900;
+  min-width: 80px; text-align: center;
+  transition: opacity .3s ease;
+}
+
+/* ===== 対戦結果オーバーレイ ===== */
+.battle-result-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 70;
+  backdrop-filter: blur(6px);
+}
+
+.battle-result-panel {
+  background: rgba(255,255,255,0.07);
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 1.5rem;
+  padding: 2.5rem 3rem;
+  min-width: 350px;
+  display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+  backdrop-filter: blur(10px);
+  animation: slideUp .4s ease;
+}
+
+.battle-result-title {
+  font-size: 2.5rem; font-weight: 900;
+  text-align: center;
+}
+.battle-win {
+  background: linear-gradient(90deg, #ffe156, #ffb347);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px #ffe15688);
+}
+.battle-lose {
+  color: #888;
+}
+.battle-draw {
+  background: linear-gradient(90deg, #5bc8ff, #b57bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.battle-scores {
+  width: 100%;
+}
+.battle-score-row {
+  display: flex; align-items: center; gap: 1rem;
+  padding: .8rem 1rem;
+  border-radius: .8rem;
+  margin-bottom: .5rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.battle-score-row.winner {
+  background: rgba(255,225,86,0.08);
+  border-color: rgba(255,225,86,0.3);
+}
+.battle-place { font-size: 1.5rem; }
+.battle-player-name { font-weight: 900; font-size: 1.1rem; flex: 1; }
+.battle-player-score {
+  font-weight: 900; font-size: 1.3rem; color: var(--yellow, #ffe156);
+}
+.battle-player-combo { font-size: .85rem; color: #aaa; }
+.battle-player-acc   { font-size: .85rem; color: var(--green, #6bffb8); }

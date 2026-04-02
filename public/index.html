@@ -15,12 +15,32 @@
     <header class="title-header">
       <h1 class="game-title">🥁 太鼓リズムゲーム</h1>
       <p class="game-subtitle">ドンドンカッカッ！</p>
+      <div class="online-count" id="onlineCount"></div>
     </header>
 
-    <section class="song-list" id="songList">
+    <!-- モード選択 -->
+    <section class="mode-select" id="modeSelect">
+      <h2 class="section-title">モード選択</h2>
+      <div class="mode-buttons">
+        <button class="mode-btn solo-btn" id="btnSolo">
+          <span class="mode-icon">🎮</span>
+          <span class="mode-name">ソロプレイ</span>
+          <span class="mode-desc">ひとりで練習・スコアアタック</span>
+        </button>
+        <button class="mode-btn online-btn" id="btnOnline">
+          <span class="mode-icon">⚔️</span>
+          <span class="mode-name">オンライン対戦</span>
+          <span class="mode-desc">リアルタイムで対戦バトル！</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 曲選択 -->
+    <section class="song-list" id="songList" style="display:none">
       <!-- JS で生成 -->
     </section>
 
+    <!-- 難易度選択パネル -->
     <div class="difficulty-panel" id="difficultyPanel" style="display:none">
       <h2 class="panel-title" id="selectedSongTitle"></h2>
       <p class="panel-artist" id="selectedSongArtist"></p>
@@ -34,9 +54,49 @@
         <button class="btn-back"    id="btnBack">← 戻る</button>
       </div>
     </div>
+
+    <!-- オンライン: 名前入力パネル -->
+    <div class="name-panel" id="namePanel" style="display:none">
+      <h2 class="panel-title">⚔️ オンライン対戦</h2>
+      <p class="panel-desc">プレイヤー名を入力してください</p>
+      <input type="text" id="onlineNameInput" class="name-input online-name-input" maxlength="10" placeholder="名前 (最大10文字)">
+      <div class="panel-actions" style="margin-top:1rem">
+        <button class="diff-btn normal" id="btnNameOk">決定</button>
+        <button class="btn-back" id="btnNameBack">← 戻る</button>
+      </div>
+    </div>
+
+    <!-- マッチングロビー -->
+    <div class="matching-panel" id="matchingPanel" style="display:none">
+      <h2 class="panel-title">⚔️ 対戦相手を探しています...</h2>
+      <div class="matching-spinner"></div>
+      <p class="matching-song" id="matchingSongInfo"></p>
+      <p class="matching-status" id="matchingStatus">マッチング中...</p>
+      <button class="btn-back" id="btnCancelMatch" style="margin-top:1.5rem">キャンセル</button>
+    </div>
+
+    <!-- マッチ成立パネル -->
+    <div class="matched-panel" id="matchedPanel" style="display:none">
+      <h2 class="panel-title matched-title">⚔️ 対戦相手が見つかりました！</h2>
+      <div class="vs-display">
+        <div class="vs-player">
+          <span class="vs-label">あなた</span>
+          <span class="vs-name" id="vsMyName"></span>
+        </div>
+        <span class="vs-text">VS</span>
+        <div class="vs-player">
+          <span class="vs-label">相手</span>
+          <span class="vs-name" id="vsOpponentName"></span>
+        </div>
+      </div>
+      <p class="matched-song" id="matchedSongInfo"></p>
+      <p class="matched-countdown" id="matchedCountdown">まもなくゲーム開始...</p>
+    </div>
   </div>
 
+  <script src="/socket.io/socket.io.js"></script>
   <script src="js/chart.js"></script>
+  <script src="js/multiplayer.js"></script>
   <script src="js/songSelect.js"></script>
 </body>
 </html>

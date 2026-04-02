@@ -1,8 +1,15 @@
-// ===== ゲームエンジン (Canvas + Web Audio API) =====
+// ===== ゲームエンジン (Canvas + Web Audio API + マルチプレイヤー対応) =====
 (async function () {
   const song = JSON.parse(sessionStorage.getItem('selectedSong') || 'null');
   const difficulty = sessionStorage.getItem('selectedDifficulty') || 'normal';
   if (!song) { window.location.href = 'index.html'; return; }
+
+  // --- モード判定 ---
+  const gameMode = sessionStorage.getItem('gameMode') || 'solo';
+  const isOnline = gameMode === 'online';
+  const roomId   = sessionStorage.getItem('roomId') || null;
+  const opponentName = sessionStorage.getItem('opponentName') || '???';
+  const myName   = sessionStorage.getItem('onlinePlayerName') || 'Player';
 
   // --- DOM ---
   const canvas      = document.getElementById('gameCanvas');
@@ -17,6 +24,20 @@
   const btnMenuHud    = document.getElementById('btnMenuHud');
   const btnResume     = document.getElementById('btnResume');
   const btnToMenu     = document.getElementById('btnToMenu');
+
+  // オンライン専用DOM
+  const opponentHud    = document.getElementById('opponentHud');
+  const opponentNameHud= document.getElementById('opponentNameHud');
+  const opponentScoreEl= document.getElementById('opponentScore');
+  const opponentComboEl= document.getElementById('opponentCombo');
+  const opponentJudgEl = document.getElementById('opponentJudgment');
+  const battleResultOverlay = document.getElementById('battleResultOverlay');
+  const battleResultTitle   = document.getElementById('battleResultTitle');
+  const battleScores        = document.getElementById('battleScores');
+  const btnBattleMenu       = document.getElementById('btnBattleMenu');
+  const disconnectOverlay   = document.getElementById('disconnectOverlay');
+  const btnContinueSolo     = document.getElementById('btnContinueSolo');
+  const btnDisconnectMenu   = document.getElementById('btnDisconnectMenu');
 
   function diffLabel(d) {
     return { easy: 'かんたん', normal: 'ふつう', hard: 'むずかしい' }[d] || d;
@@ -37,6 +58,7 @@
   let chartDuration = 0;
   let animId = null;
   let lastTimestamp = null;
+  let opponentDisconnected = false;
 
   // --- エフェクト用配列 ---
   let particles  = [];
@@ -77,6 +99,119 @@
   }
 
   // =============================================
+  // オンラインモード初期化
+  // =============================================
+  if (isOnline && roomId) {
+    opponentHud.style.display = 'flex';
+    opponentNameHud.textContent = opponentName;
+
+    // Socket.ioルーム再参加 (ページ遷移後)
+    Multiplayer.rejoinRoom(roomId, myName);
+
+    // 相手スコア更新
+    Multiplayer.on('opponentUpdate', (data) => {
+      opponentScoreEl.textContent = data.score.toLocaleString();
+      opponentComboEl.textContent = data.combo;
+
+      // 相手の判定表示
+      if (data.judgment) {
+        showOpponentJudgment(data.judgment);
+      }
+    });
+
+    // 相手切断
+    Multiplayer.on('opponentDisconnected', () => {
+      opponentDisconnected = true;
+      if (gameRunning) {
+        gameRunning = false;
+        isPaused = true;
+        AudioManager.pauseBGM();
+        if (animId) cancelAnimationFrame(animId);
+        disconnectOverlay.style.display = 'flex';
+      }
+    });
+
+    // 対戦結果
+    Multiplayer.on('battleResult', (data) => {
+      showBattleResult(data.results);
+    });
+  }
+
+  // --- 相手の判定テキスト表示 ---
+  let opponentJudgTimer = null;
+  function showOpponentJudgment(judgment) {
+    const text = judgment === 'perfect' ? 'PERFECT!' : judgment === 'good' ? 'GOOD' : 'MISS';
+    const color = judgment === 'perfect' ? '#ffe156' : judgment === 'good' ? '#6bffb8' : '#ff5555';
+    opponentJudgEl.textContent = text;
+    opponentJudgEl.style.color = color;
+    opponentJudgEl.style.opacity = '1';
+    clearTimeout(opponentJudgTimer);
+    opponentJudgTimer = setTimeout(() => {
+      opponentJudgEl.style.opacity = '0';
+    }, 400);
+  }
+
+  // --- 対戦結果表示 ---
+  function showBattleResult(results) {
+    if (animId) cancelAnimationFrame(animId);
+    gameRunning = false;
+    AudioManager.stopBGM();
+
+    const myResult = results.find(r => r.name === myName);
+    const opResult = results.find(r => r.name !== myName);
+
+    let titleText, titleClass;
+    if (results[0].name === myName) {
+      titleText = '🎉 WIN!';
+      titleClass = 'battle-win';
+    } else if (myResult && opResult && myResult.score === opResult.score) {
+      titleText = '🤝 DRAW!';
+      titleClass = 'battle-draw';
+    } else {
+      titleText = '😢 LOSE...';
+      titleClass = 'battle-lose';
+    }
+
+    battleResultTitle.textContent = titleText;
+    battleResultTitle.className = 'battle-result-title ' + titleClass;
+
+    battleScores.innerHTML = results.map((r, i) => `
+      <div class="battle-score-row ${i === 0 ? 'winner' : ''}">
+        <span class="battle-place">${i === 0 ? '👑' : '💀'}</span>
+        <span class="battle-player-name">${r.name}</span>
+        <span class="battle-player-score">${r.score.toLocaleString()}</span>
+        <span class="battle-player-combo">${r.maxCombo || 0} combo</span>
+        <span class="battle-player-acc">${r.accuracy || 0}%</span>
+      </div>
+    `).join('');
+
+    battleResultOverlay.style.display = 'flex';
+  }
+
+  // 切断時ボタン
+  if (btnContinueSolo) {
+    btnContinueSolo.addEventListener('click', () => {
+      disconnectOverlay.style.display = 'none';
+      isPaused = false;
+      gameRunning = true;
+      AudioManager.resumeBGM();
+      lastTimestamp = null;
+      animId = requestAnimationFrame(gameLoop);
+    });
+  }
+  if (btnDisconnectMenu) {
+    btnDisconnectMenu.addEventListener('click', () => {
+      AudioManager.stopBGM();
+      window.location.href = 'index.html';
+    });
+  }
+  if (btnBattleMenu) {
+    btnBattleMenu.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  // =============================================
   // エフェクト生成
   // =============================================
   function spawnEffect(result) {
@@ -84,7 +219,6 @@
     const x = JUDGE_LINE_X;
 
     if (result === 'perfect') {
-      // 黄金パーティクル爆発 (22個)
       for (let i = 0; i < 22; i++) {
         const angle = (Math.PI * 2 * i / 22) + Math.random() * 0.25;
         const speed = 130 + Math.random() * 170;
@@ -96,7 +230,6 @@
           alpha: 1, decay: 0.026 + Math.random() * 0.014, gravity: 80
         });
       }
-      // 3段階拡張リング
       for (let i = 0; i < 3; i++) {
         rings.push({
           x, y: laneY, r: NOTE_R + 4,
@@ -105,11 +238,8 @@
           alpha: 1 - i * 0.2, speed: 200 + i * 50
         });
       }
-      // 白フラッシュ
       screenFlash = { r: 255, g: 255, b: 200, alpha: 0.3, decay: 0.045 };
-
     } else if (result === 'good') {
-      // シアン/グリーンパーティクル (12個)
       for (let i = 0; i < 12; i++) {
         const angle = (Math.PI * 2 * i / 12);
         const speed = 70 + Math.random() * 90;
@@ -125,9 +255,7 @@
         x, y: laneY, r: NOTE_R + 4, targetR: NOTE_R + 68,
         color: '#6bffb8', alpha: 0.85, speed: 170
       });
-
-    } else { // miss
-      // 赤スモーク (8個)
+    } else {
       for (let i = 0; i < 8; i++) {
         particles.push({
           x: x + (Math.random() - 0.5) * 35,
@@ -139,11 +267,9 @@
           alpha: 0.85, decay: 0.038 + Math.random() * 0.018, gravity: 40
         });
       }
-      // 赤フラッシュ
       screenFlash = { r: 255, g: 0, b: 0, alpha: 0.22, decay: 0.065 };
     }
 
-    // 判定テキスト (判定ライン真上にCanvas描画)
     canvasTexts.push({
       text:  result === 'perfect' ? 'PERFECT!' : result === 'good' ? 'GOOD' : 'MISS',
       x, y: laneY - NOTE_R - 20,
@@ -283,7 +409,6 @@
       ctx.shadowColor = t.shadow; ctx.shadowBlur = 24;
       ctx.fillStyle = t.color;
       ctx.fillText(t.text, t.x, t.y);
-      // 白縁取り
       ctx.shadowBlur = 0;
       ctx.strokeStyle = 'rgba(0,0,0,0.5)';
       ctx.lineWidth = 2;
@@ -305,21 +430,30 @@
     }
     if (!best || bestDist > HIT_WINDOW.good) return;
 
+    let judgment;
     if (bestDist <= HIT_WINDOW.perfect) {
       best.hit = 'perfect';
       score += 300 + combo * 2;
       combo++; countPerfect++;
+      judgment = 'perfect';
       spawnEffect('perfect');
     } else {
       best.hit = 'good';
       score += 100;
       combo++; countGood++;
+      judgment = 'good';
       spawnEffect('good');
     }
     if (combo > maxCombo) maxCombo = combo;
     updateHUD();
+
     if (best.type === 'don') AudioManager.playDon();
     else                     AudioManager.playKa();
+
+    // オンラインモード: スコア送信
+    if (isOnline && !opponentDisconnected) {
+      Multiplayer.sendScoreUpdate(score, combo, judgment);
+    }
   }
 
   function checkMiss() {
@@ -331,6 +465,10 @@
         combo = 0; countMiss++;
         spawnEffect('miss');
         updateHUD();
+        // オンラインモード: miss送信
+        if (isOnline && !opponentDisconnected) {
+          Multiplayer.sendScoreUpdate(score, combo, 'miss');
+        }
       }
     });
   }
@@ -372,21 +510,35 @@
     gameRunning = false;
     AudioManager.stopBGM();
     if (animId) cancelAnimationFrame(animId);
+
     const accuracy = totalNotes > 0
       ? Math.round((countPerfect + countGood * 0.5) / totalNotes * 1000) / 10 : 0;
-    sessionStorage.setItem('result', JSON.stringify({
+
+    const resultData = {
       song: song.id, songTitle: song.title, difficulty,
       score, maxCombo, accuracy,
       perfect: countPerfect, good: countGood, miss: countMiss
-    }));
-    window.location.href = 'result.html';
+    };
+
+    if (isOnline && !opponentDisconnected) {
+      // オンラインモード: 終了結果をサーバーに送信し、対戦結果を待つ
+      Multiplayer.sendGameFinished(resultData);
+      // 結果はbattleResultコールバックで処理される
+      // ソロリザルトも保存（フォールバック用）
+      sessionStorage.setItem('result', JSON.stringify(resultData));
+    } else {
+      // ソロモード or 相手切断: 通常リザルト画面へ
+      sessionStorage.setItem('result', JSON.stringify(resultData));
+      window.location.href = 'result.html';
+    }
   }
 
   // =============================================
-  // ポーズ / メニュー
+  // ポーズ / メニュー (オンラインモードではポーズ不可)
   // =============================================
   function pauseGame() {
     if (!gameRunning || isPaused) return;
+    if (isOnline && !opponentDisconnected) return; // オンライン中はポーズ不可
     isPaused = true; gameRunning = false;
     AudioManager.pauseBGM();
     if (animId) cancelAnimationFrame(animId);
@@ -406,6 +558,7 @@
     gameRunning = false;
     AudioManager.stopBGM();
     if (animId) cancelAnimationFrame(animId);
+    if (isOnline) Multiplayer.disconnect();
     window.location.href = 'index.html';
   }
 
@@ -416,7 +569,7 @@
   // =============================================
   // キー入力
   // =============================================
-  const DON_KEYS = new Set(['Space', 'KeyF', 'KeyG']);
+  const DON_KEYS = new Set(['Space', 'KeyD', 'KeyF']);
   const KA_KEYS  = new Set(['Enter', 'KeyJ', 'KeyK']);
 
   window.addEventListener('keydown', e => {
@@ -434,7 +587,7 @@
   });
 
   // =============================================
-  // カウントダウン
+  // カウントダウン & ゲーム開始
   // =============================================
   async function animateCount(text, duration) {
     countdownNumber.textContent = text;
@@ -447,6 +600,19 @@
 
   async function startCountdown() {
     await AudioManager.loadBGM(song.src).catch(() => null);
+
+    if (isOnline && roomId) {
+      // オンラインモード: ready送信して全員準備完了を待つ
+      countdownNumber.textContent = '準備中...';
+      countdownOverlay.style.display = 'flex';
+
+      Multiplayer.sendReady();
+
+      // gameStartイベント待ち
+      await new Promise(resolve => {
+        Multiplayer.on('gameStart', () => resolve());
+      });
+    }
 
     for (let i = 3; i >= 1; i--) {
       await animateCount(String(i), 850);

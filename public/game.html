@@ -28,6 +28,24 @@
     <button class="btn-menu-hud" id="btnMenuHud" title="メニュー (ESC)">⏸ MENU</button>
   </div>
 
+  <!-- 対戦相手HUD (オンライン時のみ表示) -->
+  <div class="opponent-hud" id="opponentHud" style="display:none">
+    <div class="opponent-info">
+      <span class="opponent-label">⚔️ VS <span id="opponentNameHud"></span></span>
+    </div>
+    <div class="opponent-stats">
+      <div class="opponent-stat">
+        <span class="opponent-stat-label">SCORE</span>
+        <span class="opponent-stat-value" id="opponentScore">0</span>
+      </div>
+      <div class="opponent-stat">
+        <span class="opponent-stat-label">COMBO</span>
+        <span class="opponent-stat-value" id="opponentCombo">0</span>
+      </div>
+      <div class="opponent-judgment" id="opponentJudgment"></div>
+    </div>
+  </div>
+
   <canvas id="gameCanvas"></canvas>
 
   <div class="key-hints">
@@ -55,8 +73,29 @@
     </div>
   </div>
 
+  <!-- 対戦結果オーバーレイ -->
+  <div class="battle-result-overlay" id="battleResultOverlay" style="display:none">
+    <div class="battle-result-panel">
+      <h2 class="battle-result-title" id="battleResultTitle"></h2>
+      <div class="battle-scores" id="battleScores"></div>
+      <button class="pause-btn resume-btn" id="btnBattleMenu">🏠 メニューへ</button>
+    </div>
+  </div>
+
+  <!-- 相手切断オーバーレイ -->
+  <div class="pause-overlay" id="disconnectOverlay" style="display:none">
+    <div class="pause-panel">
+      <h2 class="pause-title">😢 相手が切断しました</h2>
+      <p style="color:#aaa;margin-bottom:1rem">ソロプレイとして続行できます</p>
+      <button class="pause-btn resume-btn" id="btnContinueSolo">▶ 続ける</button>
+      <button class="pause-btn menu-btn" id="btnDisconnectMenu">🏠 メニューへ</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/chart.js"></script>
+  <script src="js/multiplayer.js"></script>
   <script src="js/game.js"></script>
 </body>
 </html>
