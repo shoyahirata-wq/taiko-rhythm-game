@@ -105,8 +105,8 @@
     opponentHud.style.display = 'flex';
     opponentNameHud.textContent = opponentName;
 
-    // Socket.ioルーム再参加 (ページ遷移後)
-    Multiplayer.rejoinRoom(roomId, myName);
+    // Socket.io接続のみ先に開始（rejoinはstartCountdown内で行う）
+    Multiplayer.connect();
 
     // 相手スコア更新
     Multiplayer.on('opponentUpdate', (data) => {
@@ -602,16 +602,36 @@
     await AudioManager.loadBGM(song.src).catch(() => null);
 
     if (isOnline && roomId) {
-      // オンラインモード: ready送信して全員準備完了を待つ
+      // オンラインモード: rejoin完了を待ってからready送信
       countdownNumber.textContent = '準備中...';
       countdownOverlay.style.display = 'flex';
 
-      Multiplayer.sendReady();
-
-      // gameStartイベント待ち
-      await new Promise(resolve => {
+      // 1. まず gameStartコールバックを先に登録
+      const gameStartPromise = new Promise(resolve => {
         Multiplayer.on('gameStart', () => resolve());
       });
+
+      // 2. rejoin完了を待つ（ページ遷移後の再接続）
+      try {
+        await Multiplayer.rejoinRoom(roomId, myName);
+        console.log('[Game] Rejoin completed, sending ready');
+      } catch (e) {
+        console.log('[Game] Rejoin failed, falling back to solo');
+        // rejoin失敗ならソロモードにフォールバック
+      }
+
+      // 3. ready送信 → 全員揃ったらgameStart
+      Multiplayer.sendReady();
+
+      // 4. gameStartイベント待ち（10秒タイムアウト）
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject('timeout'), 10000)
+      );
+      try {
+        await Promise.race([gameStartPromise, timeout]);
+      } catch (e) {
+        console.log('[Game] gameStart timeout, starting anyway');
+      }
     }
 
     for (let i = 3; i >= 1; i--) {

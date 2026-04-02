@@ -74,17 +74,6 @@ const Multiplayer = (() => {
       if (callbacks.onOpponentDisconnected) callbacks.onOpponentDisconnected(data);
     });
 
-    // ルーム再参加成功
-    socket.on('rejoinSuccess', (data) => {
-      roomId = data.roomId;
-      console.log('[MP Client] Rejoin success:', data.roomId);
-    });
-
-    // ルーム再参加失敗
-    socket.on('rejoinFailed', (data) => {
-      console.log('[MP Client] Rejoin failed:', data.message);
-    });
-
     // 対戦結果
     socket.on('battleResult', (data) => {
       console.log('[MP Client] Battle result:', data);
@@ -92,18 +81,33 @@ const Multiplayer = (() => {
     });
   }
 
+  // rejoinRoomはPromiseを返す（完了を待てる）
   function rejoinRoom(rid, name) {
-    if (!socket) connect();
-    playerName = name;
-    roomId = rid;
-    // connectイベント後にrejoin送信
-    if (socket.connected) {
-      socket.emit('rejoinRoom', { roomId: rid, playerName: name });
-    } else {
-      socket.once('connect', () => {
+    return new Promise((resolve, reject) => {
+      if (!socket) connect();
+      playerName = name;
+      roomId = rid;
+
+      function doRejoin() {
+        // 一度だけ成功/失敗を受け取る
+        socket.once('rejoinSuccess', (data) => {
+          roomId = data.roomId;
+          console.log('[MP Client] Rejoin success:', data.roomId);
+          resolve(data);
+        });
+        socket.once('rejoinFailed', (data) => {
+          console.log('[MP Client] Rejoin failed:', data.message);
+          reject(data);
+        });
         socket.emit('rejoinRoom', { roomId: rid, playerName: name });
-      });
-    }
+      }
+
+      if (socket.connected) {
+        doRejoin();
+      } else {
+        socket.once('connect', doRejoin);
+      }
+    });
   }
 
   function findMatch(songId, difficulty, name) {

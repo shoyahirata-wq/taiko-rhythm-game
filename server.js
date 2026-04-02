@@ -93,6 +93,8 @@ app.post('/api/ranking', async (req, res) => {
 const waitingRooms = new Map();
 // アクティブルーム {roomId: { players: [{socketId, name, score, combo, ready, finished, result}], songId, difficulty, state }}
 const rooms = new Map();
+// 切断猶予タイマー {socketId: timerId} - ページ遷移時の猶予
+const disconnectTimers = new Map();
 
 function generateRoomId() {
   return Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -115,11 +117,17 @@ io.on('connection', (socket) => {
       socket.emit('rejoinFailed', { message: 'Room not found' });
       return;
     }
-    // 既存プレイヤーのsocketIdを更新
+    // 切断猶予タイマーがあればキャンセル
+    for (const [oldSid, timer] of disconnectTimers.entries()) {
+      clearTimeout(timer);
+      disconnectTimers.delete(oldSid);
+    }
+    // 既存プレイヤーのsocketIdを更新（名前で検索）
     const player = room.players.find(p => p.name === playerName);
     if (player) {
       const oldSocketId = player.socketId;
       player.socketId = socket.id;
+      player.ready = false; // readyをリセット（game.jsで再度sendReadyする）
       socket.join(rid);
       console.log(`[MP] Player ${playerName} rejoined room ${rid} (${oldSocketId} -> ${socket.id})`);
       socket.emit('rejoinSuccess', {
@@ -277,7 +285,7 @@ io.on('connection', (socket) => {
 });
 
 function cleanupPlayer(socket) {
-  // 待機ルームから削除
+  // 待機ルーム (waiting状態) からは即座に削除
   for (const [key, roomId] of waitingRooms.entries()) {
     const room = rooms.get(roomId);
     if (room && room.players.some(p => p.socketId === socket.id)) {
@@ -288,18 +296,34 @@ function cleanupPlayer(socket) {
     }
   }
 
-  // アクティブルームから削除 → 相手に通知
+  // matched/playing状態のルームでは猶予期間を設ける（ページ遷移対応）
   for (const [roomId, room] of rooms.entries()) {
-    const idx = room.players.findIndex(p => p.socketId === socket.id);
-    if (idx !== -1) {
-      room.players.splice(idx, 1);
-      if (room.players.length > 0) {
-        io.to(roomId).emit('opponentDisconnected', {
-          message: '対戦相手が切断しました'
-        });
-      }
-      if (room.players.length === 0) {
-        rooms.delete(roomId);
+    const player = room.players.find(p => p.socketId === socket.id);
+    if (player) {
+      if (room.state === 'matched' || room.state === 'playing') {
+        // 15秒の猶予を設ける（ページ遷移して再接続する時間）
+        console.log(`[MP] Player ${player.name} disconnected from room ${roomId}, grace period started (15s)`);
+        const timerId = setTimeout(() => {
+          disconnectTimers.delete(socket.id);
+          const currentRoom = rooms.get(roomId);
+          if (!currentRoom) return;
+          const idx = currentRoom.players.findIndex(p => p.name === player.name);
+          if (idx !== -1) {
+            currentRoom.players.splice(idx, 1);
+            console.log(`[MP] Player ${player.name} removed from room ${roomId} after grace period`);
+            if (currentRoom.players.length > 0) {
+              io.to(roomId).emit('opponentDisconnected', { message: '対戦相手が切断しました' });
+            } else {
+              rooms.delete(roomId);
+            }
+          }
+        }, 15000);
+        disconnectTimers.set(socket.id, timerId);
+      } else {
+        // finished等の状態では即削除
+        const idx = room.players.findIndex(p => p.socketId === socket.id);
+        if (idx !== -1) room.players.splice(idx, 1);
+        if (room.players.length === 0) rooms.delete(roomId);
       }
       return;
     }
