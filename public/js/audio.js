@@ -4,7 +4,7 @@ const AudioManager = (() => {
   let bgmSource = null;
   let bgmBuffer = null;
   let bgmStartTime = 0;
-  let bgmOffset = 0;
+  let bgmPausePos = 0; // ポーズ時の再生位置
   let masterGain = null;
 
   function getCtx() {
@@ -16,7 +16,7 @@ const AudioManager = (() => {
     return ctx;
   }
 
-  // ドン音 (低い太鼓): 減衰するサイン波
+  // ドン音 (低い太鼓)
   function playDon() {
     const c = getCtx();
     const osc = c.createOscillator();
@@ -29,7 +29,6 @@ const AudioManager = (() => {
     osc.start(c.currentTime);
     osc.stop(c.currentTime + 0.25);
 
-    // 倍音でパンチを追加
     const osc2 = c.createOscillator();
     const gain2 = c.createGain();
     osc2.type = 'triangle';
@@ -41,10 +40,9 @@ const AudioManager = (() => {
     osc2.stop(c.currentTime + 0.1);
   }
 
-  // カッ音 (高い縁): 短いノイズ+高周波
+  // カッ音 (高い縁)
   function playKa() {
     const c = getCtx();
-    // ノイズバースト
     const bufLen = c.sampleRate * 0.1;
     const noiseBuffer = c.createBuffer(1, bufLen, c.sampleRate);
     const data = noiseBuffer.getChannelData(0);
@@ -58,10 +56,8 @@ const AudioManager = (() => {
     noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(masterGain);
     noiseGain.gain.setValueAtTime(0.6, c.currentTime);
     noiseGain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.1);
-    noise.start(c.currentTime);
-    noise.stop(c.currentTime + 0.1);
+    noise.start(c.currentTime); noise.stop(c.currentTime + 0.1);
 
-    // 高音オシレータ
     const osc = c.createOscillator();
     const gain = c.createGain();
     osc.type = 'square';
@@ -70,8 +66,7 @@ const AudioManager = (() => {
     osc.frequency.exponentialRampToValueAtTime(400, c.currentTime + 0.08);
     gain.gain.setValueAtTime(0.3, c.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.08);
-    osc.start(c.currentTime);
-    osc.stop(c.currentTime + 0.08);
+    osc.start(c.currentTime); osc.stop(c.currentTime + 0.08);
   }
 
   // BGM ロード
@@ -83,7 +78,7 @@ const AudioManager = (() => {
     return bgmBuffer.duration;
   }
 
-  // BGM 再生
+  // BGM 再生 (offset秒から)
   function playBGM(offset = 0) {
     if (!bgmBuffer) return;
     const c = getCtx();
@@ -92,12 +87,24 @@ const AudioManager = (() => {
     bgmSource.buffer = bgmBuffer;
     bgmSource.connect(masterGain);
     bgmStartTime = c.currentTime - offset;
-    bgmOffset = offset;
     bgmSource.start(c.currentTime, offset);
+  }
+
+  // BGM 一時停止
+  function pauseBGM() {
+    if (!ctx) return;
+    bgmPausePos = ctx.currentTime - bgmStartTime;
+    if (bgmSource) { try { bgmSource.stop(); } catch (_) {} bgmSource = null; }
+  }
+
+  // BGM 再開 (pauseBGM後)
+  function resumeBGM() {
+    playBGM(bgmPausePos);
   }
 
   function stopBGM() {
     if (bgmSource) { try { bgmSource.stop(); } catch (_) {} bgmSource = null; }
+    bgmPausePos = 0;
   }
 
   function getBGMCurrentTime() {
@@ -109,5 +116,5 @@ const AudioManager = (() => {
     if (ctx && ctx.state === 'suspended') ctx.resume();
   }
 
-  return { playDon, playKa, loadBGM, playBGM, stopBGM, getBGMCurrentTime, resume };
+  return { playDon, playKa, loadBGM, playBGM, pauseBGM, resumeBGM, stopBGM, getBGMCurrentTime, resume };
 })();

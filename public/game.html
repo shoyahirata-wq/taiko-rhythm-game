@@ -25,13 +25,10 @@
       <span class="hud-label">COMBO</span>
       <span class="hud-value combo-value" id="comboDisplay">0</span>
     </div>
+    <button class="btn-menu-hud" id="btnMenuHud" title="メニュー (ESC)">⏸ MENU</button>
   </div>
 
   <canvas id="gameCanvas"></canvas>
-
-  <div class="judgment-popup" id="judgmentPopup"></div>
-
-  <div class="combo-popup" id="comboPopup"></div>
 
   <div class="key-hints">
     <div class="key-hint">
@@ -44,8 +41,18 @@
     </div>
   </div>
 
+  <!-- カウントダウン (初期テキストなし) -->
   <div class="countdown-overlay" id="countdownOverlay">
-    <div class="countdown-number" id="countdownNumber">3</div>
+    <div class="countdown-number" id="countdownNumber"></div>
+  </div>
+
+  <!-- ポーズオーバーレイ -->
+  <div class="pause-overlay" id="pauseOverlay" style="display:none">
+    <div class="pause-panel">
+      <h2 class="pause-title">⏸ ポーズ</h2>
+      <button class="pause-btn resume-btn" id="btnResume">▶ 続ける</button>
+      <button class="pause-btn menu-btn"   id="btnToMenu">🏠 メニューへ</button>
+    </div>
   </div>
 
   <script src="js/audio.js"></script>
