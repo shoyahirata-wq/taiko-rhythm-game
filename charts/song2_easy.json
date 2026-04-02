@@ -1,37 +1,280 @@
 {
   "title": "ドキドキドラムロール",
   "difficulty": "easy",
-  "bpm": 160,
-  "offset": 0.0,
+  "bpm": 89.1,
+  "offset": 0.07,
   "notes": [
-    {"time": 1.0,  "type": "don"},
-    {"time": 1.375,"type": "don"},
-    {"time": 1.75, "type": "ka"},
-    {"time": 2.5,  "type": "don"},
-    {"time": 2.875,"type": "don"},
-    {"time": 3.25, "type": "ka"},
-    {"time": 4.0,  "type": "don"},
-    {"time": 4.375,"type": "ka"},
-    {"time": 4.75, "type": "don"},
-    {"time": 5.5,  "type": "don"},
-    {"time": 5.875,"type": "don"},
-    {"time": 6.25, "type": "ka"},
-    {"time": 7.0,  "type": "don"},
-    {"time": 7.375,"type": "ka"},
-    {"time": 7.75, "type": "don"},
-    {"time": 8.5,  "type": "don"},
-    {"time": 9.0,  "type": "ka"},
-    {"time": 9.5,  "type": "don"},
-    {"time": 10.0, "type": "don"},
-    {"time": 10.5, "type": "ka"},
-    {"time": 11.0, "type": "don"},
-    {"time": 11.5, "type": "don"},
-    {"time": 12.0, "type": "ka"},
-    {"time": 12.5, "type": "don"},
-    {"time": 13.0, "type": "don"},
-    {"time": 13.5, "type": "ka"},
-    {"time": 14.0, "type": "don"},
-    {"time": 14.5, "type": "don"},
-    {"time": 15.0, "type": "don"}
+    {
+      "time": 0.07,
+      "type": "don"
+    },
+    {
+      "time": 1.44,
+      "type": "don"
+    },
+    {
+      "time": 2.786,
+      "type": "ka"
+    },
+    {
+      "time": 4.133,
+      "type": "don"
+    },
+    {
+      "time": 5.503,
+      "type": "don"
+    },
+    {
+      "time": 6.85,
+      "type": "ka"
+    },
+    {
+      "time": 8.29,
+      "type": "ka"
+    },
+    {
+      "time": 9.567,
+      "type": "ka"
+    },
+    {
+      "time": 10.913,
+      "type": "don"
+    },
+    {
+      "time": 12.283,
+      "type": "ka"
+    },
+    {
+      "time": 13.63,
+      "type": "ka"
+    },
+    {
+      "time": 14.977,
+      "type": "ka"
+    },
+    {
+      "time": 16.347,
+      "type": "don"
+    },
+    {
+      "time": 17.694,
+      "type": "ka"
+    },
+    {
+      "time": 19.04,
+      "type": "ka"
+    },
+    {
+      "time": 20.248,
+      "type": "ka"
+    },
+    {
+      "time": 21.455,
+      "type": "don"
+    },
+    {
+      "time": 22.802,
+      "type": "don"
+    },
+    {
+      "time": 24.149,
+      "type": "ka"
+    },
+    {
+      "time": 25.496,
+      "type": "don"
+    },
+    {
+      "time": 26.865,
+      "type": "don"
+    },
+    {
+      "time": 28.212,
+      "type": "don"
+    },
+    {
+      "time": 29.582,
+      "type": "ka"
+    },
+    {
+      "time": 30.929,
+      "type": "don"
+    },
+    {
+      "time": 32.299,
+      "type": "don"
+    },
+    {
+      "time": 33.646,
+      "type": "ka"
+    },
+    {
+      "time": 34.992,
+      "type": "ka"
+    },
+    {
+      "time": 36.362,
+      "type": "don"
+    },
+    {
+      "time": 37.709,
+      "type": "don"
+    },
+    {
+      "time": 39.056,
+      "type": "ka"
+    },
+    {
+      "time": 40.333,
+      "type": "ka"
+    },
+    {
+      "time": 41.517,
+      "type": "don"
+    },
+    {
+      "time": 42.794,
+      "type": "don"
+    },
+    {
+      "time": 44.164,
+      "type": "don"
+    },
+    {
+      "time": 45.511,
+      "type": "ka"
+    },
+    {
+      "time": 46.858,
+      "type": "don"
+    },
+    {
+      "time": 48.228,
+      "type": "don"
+    },
+    {
+      "time": 49.575,
+      "type": "ka"
+    },
+    {
+      "time": 50.945,
+      "type": "ka"
+    },
+    {
+      "time": 52.291,
+      "type": "ka"
+    },
+    {
+      "time": 53.638,
+      "type": "don"
+    },
+    {
+      "time": 54.985,
+      "type": "don"
+    },
+    {
+      "time": 56.355,
+      "type": "ka"
+    },
+    {
+      "time": 57.702,
+      "type": "don"
+    },
+    {
+      "time": 59.072,
+      "type": "don"
+    },
+    {
+      "time": 60.418,
+      "type": "ka"
+    },
+    {
+      "time": 61.788,
+      "type": "ka"
+    },
+    {
+      "time": 63.112,
+      "type": "don"
+    },
+    {
+      "time": 64.505,
+      "type": "don"
+    },
+    {
+      "time": 65.852,
+      "type": "don"
+    },
+    {
+      "time": 67.199,
+      "type": "ka"
+    },
+    {
+      "time": 68.545,
+      "type": "don"
+    },
+    {
+      "time": 69.915,
+      "type": "don"
+    },
+    {
+      "time": 71.262,
+      "type": "ka"
+    },
+    {
+      "time": 72.632,
+      "type": "ka"
+    },
+    {
+      "time": 73.979,
+      "type": "ka"
+    },
+    {
+      "time": 75.326,
+      "type": "don"
+    },
+    {
+      "time": 76.696,
+      "type": "ka"
+    },
+    {
+      "time": 78.042,
+      "type": "ka"
+    },
+    {
+      "time": 79.412,
+      "type": "don"
+    },
+    {
+      "time": 80.759,
+      "type": "don"
+    },
+    {
+      "time": 82.129,
+      "type": "ka"
+    },
+    {
+      "time": 83.313,
+      "type": "ka"
+    },
+    {
+      "time": 84.66,
+      "type": "don"
+    },
+    {
+      "time": 85.937,
+      "type": "don"
+    },
+    {
+      "time": 87.214,
+      "type": "don"
+    },
+    {
+      "time": 88.561,
+      "type": "ka"
+    },
+    {
+      "time": 89.908,
+      "type": "don"
+    }
   ]
 }

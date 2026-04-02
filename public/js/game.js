@@ -356,7 +356,10 @@
     const elapsed = getGameTime();
     progressBar.style.width = Math.min(elapsed / chartDuration * 100, 100) + '%';
 
-    if (notes.every(n => n.hit !== null) && elapsed > chartDuration - 1) {
+    // 全ノーツ消化 or 最後のノーツから2秒経過 で終了
+    const lastNoteTime = notes.length > 0 ? notes[notes.length - 1].time : 0;
+    const allDone = notes.every(n => n.hit !== null);
+    if ((allDone && elapsed > lastNoteTime + 1.5) || elapsed > lastNoteTime + 3) {
       endGame(); return;
     }
     animId = requestAnimationFrame(gameLoop);

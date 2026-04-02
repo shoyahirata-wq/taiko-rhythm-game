@@ -1,28 +1,27 @@
 // 譜面データ管理・ロード
 const ChartManager = (() => {
-  // 曲マスターデータ (BGMファイルが揃い次第 src を更新)
   const SONGS = [
     {
       id: 'song1',
       title: 'ポップスター☆フィーバー',
-      artist: 'AI Beats',
-      bpm: 140,
+      artist: 'Kyaai (DOVA-SYNDROME)',
+      bpm: 129,
       icon: '⭐',
       src: 'assets/music/song1.mp3'
     },
     {
       id: 'song2',
       title: 'ドキドキドラムロール',
-      artist: 'Rhythm Kids',
-      bpm: 160,
+      artist: 'まんぼう二等兵 (DOVA-SYNDROME)',
+      bpm: 89,
       icon: '💖',
       src: 'assets/music/song2.mp3'
     },
     {
       id: 'song3',
       title: 'ナイトパレード',
-      artist: 'Neon Parade',
-      bpm: 128,
+      artist: 'MFP (DOVA-SYNDROME)',
+      bpm: 123,
       icon: '🌙',
       src: 'assets/music/song3.mp3'
     }
