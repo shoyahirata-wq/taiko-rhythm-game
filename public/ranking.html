@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ランキング - 太鼓リズムゲーム</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-stars" id="bgStars"></div>
+  <div class="container">
+    <header class="title-header">
+      <h1 class="game-title">🏆 ランキング</h1>
+    </header>
+
+    <div class="ranking-filters">
+      <select id="rankSongSelect" class="rank-select"></select>
+      <div class="diff-tabs">
+        <button class="diff-tab active" data-diff="easy">かんたん</button>
+        <button class="diff-tab" data-diff="normal">ふつう</button>
+        <button class="diff-tab" data-diff="hard">むずかしい</button>
+      </div>
+    </div>
+
+    <div class="ranking-table-wrap">
+      <table class="ranking-table">
+        <thead>
+          <tr>
+            <th>順位</th>
+            <th>名前</th>
+            <th>スコア</th>
+            <th>コンボ</th>
+            <th>精度</th>
+          </tr>
+        </thead>
+        <tbody id="rankingBody">
+          <tr><td colspan="5" class="loading-cell">読み込み中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-back" id="btnBack">← 戻る</button>
+    </div>
+  </div>
+  <script src="js/ranking.js"></script>
+</body>
+</html>

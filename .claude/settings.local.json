@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "mcp__Claude_Preview__preview_start",
+      "WebFetch(domain:dova-s.jp)",
+      "WebSearch",
+      "Bash(curl -I \"https://dova-s.jp/_mp3/1984.mp3\")",
+      "Bash(curl -s \"https://dova-s.jp/bgm/detail/1984/download\" -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\")",
+      "Bash(curl -s \"https://dova-s.jp/bgm/detail/1984/download\" -A \"Mozilla/5.0\")",
+      "Bash(python3 -c \":*)",
+      "Bash(curl -s \"https://dova-s.jp/bgm/detail/1984/download\" -A \"Mozilla/5.0\" -o /c/Users/euphl/Desktop/dova_dl.html)",
+      "Bash(python3 /c/Users/euphl/Desktop/parse_dova.py)",
+      "Read(//c/Users/euphl/Desktop/**)",
+      "Bash(DEST=\"C:/Users/euphl/Desktop/dova_dl.html\")",
+      "Bash(curl -s \"https://dova-s.jp/bgm/detail/1984/download\" -A \"Mozilla/5.0\" -o \"$DEST\")",
+      "Read(//c/Users/euphl/Desktop/Code作業/sound/**)",
+      "Bash(python3 -:*)",
+      "Bash(DOWNLOAD_URL=\"https://dova-worker.tracks-cid.workers.dev/download?filepath=bgm%2Faudio%2F5d4f4cb5-5c10-4824-a0b2-aa73b97a2670.mp3&expires=1775097027&token=7fef45cb4f3484a3c8fbb1ea8cac81eb7109185c4dd53e825f8a75eb3c565990&filename=Stream\")",
+      "Bash(DEST=\"/c/Users/euphl/Desktop/Code作業/sound/public/assets/music/song1.mp3\")",
+      "Bash(__NEW_LINE_edb8a4c250b09cc0__ curl:*)",
+      "Bash(URL3=\"https://dova-worker.tracks-cid.workers.dev/download?filepath=bgm%2Faudio%2F04c4c2a0-69c8-4c74-8a4e-0310f4c8a589.mp3&expires=1775097201&token=b43a4adff968f4af4c02be5bbfdf60f20187d1934047ff03873ef69b678aa0b2&filename=City_Wave\")",
+      "Bash(DEST=\"/c/Users/euphl/Desktop/Code作業/sound/public/assets/music/song3.mp3\")",
+      "Bash(curl -L \"$URL3\" -o \"$DEST\" -A \"Mozilla/5.0\" --progress-bar)",
+      "Bash(git --version)",
+      "Bash(gh --version)",
+      "Bash(az --version)",
+      "Bash(gh auth:*)",
+      "Bash(az account:*)"
+    ]
+  }
+}

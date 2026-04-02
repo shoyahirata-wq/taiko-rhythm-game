@@ -1,0 +1,341 @@
+/* ===== リセット & 基本 ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:    #ff6eb4;
+  --blue:    #5bc8ff;
+  --yellow:  #ffe156;
+  --purple:  #b57bff;
+  --green:   #6bffb8;
+  --don-red: #ff4d4d;
+  --ka-blue: #4d9fff;
+  --bg-dark: #0d0720;
+  --bg-mid:  #1a0f3a;
+  --card-bg: rgba(255,255,255,0.07);
+  --glow-pink:   0 0 12px #ff6eb4, 0 0 30px #ff6eb466;
+  --glow-blue:   0 0 12px #5bc8ff, 0 0 30px #5bc8ff66;
+  --glow-yellow: 0 0 12px #ffe156, 0 0 30px #ffe15666;
+}
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-mid) 100%);
+  min-height: 100vh;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ===== 背景の星アニメ ===== */
+.bg-stars {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  opacity: 0;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50%       { opacity: var(--max-op, 0.8); transform: scale(1); }
+}
+
+/* ===== レイアウト ===== */
+.container {
+  position: relative; z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* ===== タイトル ===== */
+.title-header { text-align: center; margin-bottom: 2.5rem; }
+
+.game-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--pink), var(--blue), var(--yellow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px #ff6eb488);
+  animation: titlePulse 3s ease-in-out infinite;
+}
+@keyframes titlePulse {
+  0%, 100% { filter: drop-shadow(0 0 10px #ff6eb488); }
+  50%       { filter: drop-shadow(0 0 24px #ff6eb4cc); }
+}
+
+.game-subtitle {
+  margin-top: .5rem;
+  font-size: 1.1rem;
+  color: var(--blue);
+  letter-spacing: .2em;
+}
+
+/* ===== 曲リスト ===== */
+.song-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+
+.song-card {
+  background: var(--card-bg);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 1.2rem;
+  padding: 1.5rem 1.2rem;
+  cursor: pointer;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+  backdrop-filter: blur(6px);
+}
+.song-card:hover {
+  transform: translateY(-5px) scale(1.03);
+  border-color: var(--pink);
+  box-shadow: var(--glow-pink);
+}
+.song-card-icon { font-size: 2.4rem; margin-bottom: .6rem; }
+.song-card-title {
+  font-size: 1.1rem; font-weight: 700;
+  color: #fff;
+  margin-bottom: .3rem;
+}
+.song-card-artist { font-size: .85rem; color: #aaa; }
+.song-card-bpm {
+  margin-top: .8rem;
+  font-size: .8rem;
+  color: var(--yellow);
+  background: rgba(255,225,86,.1);
+  display: inline-block;
+  padding: .15rem .6rem;
+  border-radius: 99px;
+}
+
+/* ===== 難易度パネル ===== */
+.difficulty-panel {
+  background: var(--card-bg);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  backdrop-filter: blur(8px);
+  text-align: center;
+  animation: slideUp .3s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel-title  { font-size: 1.6rem; font-weight: 900; margin-bottom: .3rem; }
+.panel-artist { color: #aaa; margin-bottom: 1.5rem; }
+
+.difficulty-buttons {
+  display: flex; gap: 1rem; justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.diff-btn {
+  padding: .8rem 2rem;
+  border: none; border-radius: 99px;
+  font-family: inherit; font-size: 1rem; font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.diff-btn:hover   { transform: scale(1.08); }
+.diff-btn.easy    { background: linear-gradient(135deg, #6bffb8, #5bc8ff); color: #0d0720; box-shadow: 0 0 14px #6bffb866; }
+.diff-btn.normal  { background: linear-gradient(135deg, var(--yellow), #ffb347); color: #0d0720; box-shadow: 0 0 14px #ffe15666; }
+.diff-btn.hard    { background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; box-shadow: 0 0 14px #ff6eb466; }
+
+.panel-actions {
+  display: flex; gap: 1rem; justify-content: center;
+}
+
+/* ===== 共通ボタン ===== */
+.btn-back {
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  color: #fff;
+  padding: .6rem 1.5rem;
+  border-radius: 99px;
+  font-family: inherit; font-size: .95rem;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-back:hover { background: rgba(255,255,255,0.2); }
+
+.btn-ranking {
+  background: linear-gradient(135deg, var(--yellow), #ffb347);
+  border: none; color: #0d0720;
+  padding: .6rem 1.5rem;
+  border-radius: 99px;
+  font-family: inherit; font-size: .95rem; font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-ranking:hover { transform: scale(1.05); box-shadow: var(--glow-yellow); }
+
+/* ===== リザルト ===== */
+.result-container { text-align: center; }
+
+.result-title {
+  font-size: 2.5rem; font-weight: 900;
+  background: linear-gradient(90deg, var(--yellow), var(--pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: .5rem;
+}
+
+.result-song-info { color: #aaa; margin-bottom: 1.5rem; font-size: .95rem; }
+
+.result-score-box {
+  display: flex; align-items: center; justify-content: center; gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.result-score {
+  font-size: 3.5rem; font-weight: 900;
+  color: var(--yellow);
+  text-shadow: var(--glow-yellow);
+}
+
+.result-rank {
+  font-size: 4rem; font-weight: 900;
+  width: 80px; height: 80px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  box-shadow: var(--glow-pink);
+}
+
+.result-stats {
+  display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.stat-item {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: .8rem;
+  padding: .7rem 1.2rem;
+  min-width: 110px;
+}
+.stat-label { display: block; font-size: .75rem; color: #999; margin-bottom: .2rem; }
+.stat-value { font-size: 1.4rem; font-weight: 700; }
+.perfect-color { color: var(--yellow); }
+.good-color    { color: var(--green); }
+.miss-color    { color: #ff6b6b; }
+
+.result-name-entry {
+  background: var(--card-bg);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 1.2rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(6px);
+}
+.name-prompt { margin-bottom: .8rem; color: #ccc; }
+.name-input {
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 99px;
+  color: #fff;
+  font-family: inherit; font-size: 1rem;
+  padding: .5rem 1.2rem;
+  width: 220px;
+  outline: none;
+  margin-right: .5rem;
+}
+.name-input:focus { border-color: var(--pink); box-shadow: var(--glow-pink); }
+
+.btn-submit {
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  border: none; color: #fff;
+  padding: .5rem 1.2rem;
+  border-radius: 99px;
+  font-family: inherit; font-size: 1rem; font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.btn-submit:hover { transform: scale(1.05); }
+
+.submit-status { margin-top: .6rem; font-size: .85rem; color: var(--green); min-height: 1.2em; }
+
+.result-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.btn-retry {
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border: none; color: #fff;
+  padding: .6rem 1.5rem;
+  border-radius: 99px;
+  font-family: inherit; font-size: .95rem; font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-retry:hover { transform: scale(1.05); box-shadow: var(--glow-blue); }
+
+/* ===== ランキング ===== */
+.ranking-filters {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  align-items: center; justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.rank-select {
+  background: var(--card-bg);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  color: #fff;
+  padding: .5rem 1rem;
+  border-radius: .8rem;
+  font-family: inherit; font-size: .95rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.diff-tabs { display: flex; gap: .5rem; }
+.diff-tab {
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  color: #ccc;
+  padding: .4rem 1rem;
+  border-radius: 99px;
+  font-family: inherit; font-size: .85rem;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.diff-tab.active {
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  border-color: transparent; color: #fff;
+  box-shadow: var(--glow-pink);
+}
+
+.ranking-table-wrap {
+  background: var(--card-bg);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 1.2rem;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  margin-bottom: 1.5rem;
+}
+
+.ranking-table { width: 100%; border-collapse: collapse; }
+.ranking-table th {
+  background: rgba(255,255,255,0.07);
+  padding: .8rem 1rem;
+  font-size: .85rem; color: #aaa; font-weight: 700;
+  text-align: left;
+}
+.ranking-table td {
+  padding: .8rem 1rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: .95rem;
+}
+.ranking-table tr:hover td { background: rgba(255,255,255,0.04); }
+
+.rank-1 td:first-child { color: var(--yellow); font-weight: 900; font-size: 1.1rem; }
+.rank-2 td:first-child { color: #c0c0c0; font-weight: 700; }
+.rank-3 td:first-child { color: #cd7f32; font-weight: 700; }
+
+.loading-cell { text-align: center; color: #888; padding: 2rem !important; }

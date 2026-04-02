@@ -1,0 +1,33 @@
+{
+  "title": "ナイトパレード",
+  "difficulty": "easy",
+  "bpm": 128,
+  "offset": 0.0,
+  "notes": [
+    {"time": 1.0,  "type": "don"},
+    {"time": 1.5,  "type": "ka"},
+    {"time": 2.0,  "type": "don"},
+    {"time": 3.0,  "type": "don"},
+    {"time": 3.5,  "type": "ka"},
+    {"time": 4.0,  "type": "don"},
+    {"time": 5.0,  "type": "ka"},
+    {"time": 5.5,  "type": "don"},
+    {"time": 6.0,  "type": "don"},
+    {"time": 7.0,  "type": "don"},
+    {"time": 7.5,  "type": "ka"},
+    {"time": 8.0,  "type": "don"},
+    {"time": 9.0,  "type": "don"},
+    {"time": 9.5,  "type": "don"},
+    {"time": 10.0, "type": "ka"},
+    {"time": 11.0, "type": "don"},
+    {"time": 11.5, "type": "ka"},
+    {"time": 12.0, "type": "don"},
+    {"time": 13.0, "type": "don"},
+    {"time": 13.5, "type": "ka"},
+    {"time": 14.0, "type": "don"},
+    {"time": 14.5, "type": "don"},
+    {"time": 15.0, "type": "ka"},
+    {"time": 15.5, "type": "don"},
+    {"time": 16.0, "type": "don"}
+  ]
+}

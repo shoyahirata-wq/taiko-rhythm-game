@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>リザルト - 太鼓リズムゲーム</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-stars" id="bgStars"></div>
+  <div class="container result-container">
+    <h1 class="result-title">🎉 リザルト</h1>
+    <div class="result-song-info">
+      <span id="resultSongName"></span> &mdash; <span id="resultDifficulty"></span>
+    </div>
+
+    <div class="result-score-box">
+      <div class="result-score" id="resultScore">0</div>
+      <div class="result-rank" id="resultRank">C</div>
+    </div>
+
+    <div class="result-stats">
+      <div class="stat-item">
+        <span class="stat-label">最大コンボ</span>
+        <span class="stat-value" id="resultCombo">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">精度</span>
+        <span class="stat-value" id="resultAccuracy">0%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Perfect</span>
+        <span class="stat-value perfect-color" id="resultPerfect">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Good</span>
+        <span class="stat-value good-color" id="resultGood">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Miss</span>
+        <span class="stat-value miss-color" id="resultMiss">0</span>
+      </div>
+    </div>
+
+    <div class="result-name-entry" id="nameEntry">
+      <p class="name-prompt">プレイヤー名を入力してランキングに登録！</p>
+      <input type="text" id="playerNameInput" class="name-input" maxlength="10" placeholder="名前 (最大10文字)">
+      <button class="btn-submit" id="btnSubmitScore">登録する 🏆</button>
+      <p class="submit-status" id="submitStatus"></p>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-retry" id="btnRetry">もう一度</button>
+      <button class="btn-ranking" id="btnRanking">🏆 ランキング</button>
+      <button class="btn-back"   id="btnBack">曲選択へ</button>
+    </div>
+  </div>
+  <script src="js/result.js"></script>
+</body>
+</html>

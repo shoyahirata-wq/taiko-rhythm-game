@@ -1,0 +1,14 @@
+{
+  "name": "taiko-rhythm-game",
+  "version": "1.0.0",
+  "description": "Browser-based taiko rhythm game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@azure/data-tables": "^13.2.2"
+  }
+}

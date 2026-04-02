@@ -1,0 +1,138 @@
+/* ===== ゲーム画面専用スタイル ===== */
+.game-body {
+  background: linear-gradient(180deg, #0d0720 0%, #1a0f3a 100%);
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+/* ===== HUD ===== */
+.game-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .6rem 1.5rem;
+  background: rgba(0,0,0,0.4);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.hud-left, .hud-right {
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 120px;
+}
+.hud-label { font-size: .7rem; letter-spacing: .15em; color: #888; }
+.hud-value { font-size: 1.8rem; font-weight: 900; color: #fff; line-height: 1.1; }
+.combo-value { color: var(--yellow, #ffe156); }
+
+.hud-center { flex: 1; text-align: center; padding: 0 1rem; }
+.song-name-hud { font-size: .85rem; color: #ccc; display: block; margin-bottom: .3rem; }
+.progress-bar-wrap {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff6eb4, #5bc8ff);
+  border-radius: 99px;
+  transition: width .1s linear;
+}
+
+/* ===== Canvas ===== */
+#gameCanvas {
+  flex: 1;
+  width: 100%;
+  display: block;
+}
+
+/* ===== 判定ポップアップ ===== */
+.judgment-popup {
+  position: fixed;
+  left: 50%; top: 55%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem; font-weight: 900;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .1s;
+  z-index: 20;
+  text-shadow: 0 0 20px currentColor;
+}
+.judgment-popup.show { opacity: 1; animation: popJudge .45s ease forwards; }
+
+@keyframes popJudge {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+  70%  { opacity: 1; transform: translate(-50%, -60%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -70%) scale(.9); }
+}
+
+.judgment-popup.perfect { color: #ffe156; }
+.judgment-popup.good    { color: #6bffb8; }
+.judgment-popup.miss    { color: #ff6b6b; }
+
+/* ===== コンボポップアップ ===== */
+.combo-popup {
+  position: fixed;
+  left: 50%; top: 45%;
+  transform: translate(-50%, -50%);
+  font-size: 1.4rem; font-weight: 900;
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 19;
+}
+.combo-popup.show { opacity: 1; animation: popCombo .3s ease forwards; }
+@keyframes popCombo {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+}
+
+/* ===== キーヒント ===== */
+.key-hints {
+  position: fixed;
+  bottom: 1rem; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 2rem;
+  z-index: 10;
+  pointer-events: none;
+}
+.key-hint {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .8rem;
+}
+kbd {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: .35rem;
+  padding: .15rem .45rem;
+  font-family: inherit; font-size: .75rem;
+  color: #fff;
+}
+.don-label { color: #ff4d4d; font-weight: 700; }
+.ka-label  { color: #4d9fff; font-weight: 700; }
+
+/* ===== カウントダウン ===== */
+.countdown-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50;
+}
+.countdown-number {
+  font-size: 8rem; font-weight: 900;
+  background: linear-gradient(135deg, #ff6eb4, #5bc8ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: countPulse .9s ease-in-out;
+}
+@keyframes countPulse {
+  0%   { transform: scale(1.5); opacity: 0; }
+  40%  { transform: scale(1);   opacity: 1; }
+  80%  { transform: scale(.95); opacity: 1; }
+  100% { transform: scale(.9);  opacity: 0; }
+}

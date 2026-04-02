@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ゲーム - 太鼓リズムゲーム</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/game.css">
+</head>
+<body class="game-body">
+  <div class="game-hud">
+    <div class="hud-left">
+      <span class="hud-label">SCORE</span>
+      <span class="hud-value" id="scoreDisplay">0</span>
+    </div>
+    <div class="hud-center">
+      <span class="song-name-hud" id="songNameHud"></span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+    <div class="hud-right">
+      <span class="hud-label">COMBO</span>
+      <span class="hud-value combo-value" id="comboDisplay">0</span>
+    </div>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <div class="judgment-popup" id="judgmentPopup"></div>
+
+  <div class="combo-popup" id="comboPopup"></div>
+
+  <div class="key-hints">
+    <div class="key-hint">
+      <kbd>D</kbd><kbd>F</kbd><kbd>Space</kbd>
+      <span class="don-label">ドン 🔴</span>
+    </div>
+    <div class="key-hint">
+      <span class="ka-label">カッ 🔵</span>
+      <kbd>J</kbd><kbd>K</kbd><kbd>Enter</kbd>
+    </div>
+  </div>
+
+  <div class="countdown-overlay" id="countdownOverlay">
+    <div class="countdown-number" id="countdownNumber">3</div>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
